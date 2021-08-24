@@ -23,6 +23,8 @@ races_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
 
 # COMMAND ----------
 
+# create the races dataframe 
+
 races_df=spark.read.schema(races_schema).csv("/mnt/storagegen2databricks/raw/races.csv",header=True)
 
 # COMMAND ----------
