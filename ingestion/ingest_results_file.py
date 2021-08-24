@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC 
 # MAGIC #### Step 1: Define the schema and apply to the file
@@ -31,7 +39,7 @@ results_schema=StructType(fields=[StructField("resultId",IntegerType(),True),
 
 results_df=spark.read\
           .schema(results_schema) \
-          .json("/mnt/storagegen2databricks/raw/results.json")
+          .json(f"{raw_folder_path}/results.json")
 
 # COMMAND ----------
 
@@ -43,7 +51,7 @@ results_df=spark.read\
 
 from pyspark.sql.functions import current_timestamp,concat,lit,col
 
-new_results_df=results_df.withColumnRenamed("resultId","result_id") \
+results_renamed_df=results_df.withColumnRenamed("resultId","result_id") \
                           .withColumnRenamed("raceId","race_id") \
                           .withColumnRenamed("driverId","driver_id")\
                           .withColumnRenamed("constructorId","constructor_id")\
@@ -56,11 +64,11 @@ new_results_df=results_df.withColumnRenamed("resultId","result_id") \
 
 # COMMAND ----------
 
-results_final_df=new_results_df.drop("statusId")
+results_final_df=add_ingestion_date(results_renamed_df)
 
 # COMMAND ----------
 
-display(final_results_df)
+results_final_df=results_final_df.drop("statusId")
 
 # COMMAND ----------
 

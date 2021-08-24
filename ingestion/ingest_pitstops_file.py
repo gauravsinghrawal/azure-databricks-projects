@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC 
 # MAGIC #### Step1: Define Schema and read the multi-line JSON file.
@@ -21,19 +29,22 @@ pitstop_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
 pitstops_df=spark.read \
 .schema(pitstop_schema) \
 .option("multiLine",True) \
-.json("/mnt/storagegen2databricks/raw/pit_stops.json")
+.json(f"{raw_folder_path}/pit_stops.json")
 
 # COMMAND ----------
 
 from pyspark.sql.functions import current_timestamp
 
-pitstop_final_df=pitstops_df.withColumnRenamed("driverId","driver_id") \
-              .withColumnRenamed("raceId","race_id") \
-              .withColumn("ingestion_date",current_timestamp())
+pitstop_renamed_df=pitstops_df.withColumnRenamed("driverId","driver_id") \
+              .withColumnRenamed("raceId","race_id")
 
 # COMMAND ----------
 
-pitstop_final_df.write.parquet("/mnt/storagegen2databricks/processed/pitstops",mode="overwrite")
+pitstop_final_df=add_ingestion_date(pitstop_renamed_df)
+
+# COMMAND ----------
+
+pitstop_final_df.write.parquet(f"{processed_folder_path}/pitstops",mode="overwrite")
 
 # COMMAND ----------
 

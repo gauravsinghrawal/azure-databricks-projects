@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC 
 # MAGIC #### Step1: Define Schema and read the multiple, multi-line JSON file.
@@ -29,25 +37,22 @@ qualifying_schema=StructType(fields=[StructField("qualifyingId",IntegerType(),Fa
 qualifying_df=spark.read \
 .schema(qualifying_schema) \
 .option("multiLine",True) \
-.json("/mnt/storagegen2databricks/raw/qualifying/qualifying_split*.json")
+.json(f"{raw_folder_path}/qualifying/qualifying_split*.json")
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
-
-qualifying_final_df=qualifying_df.withColumnRenamed("qualifyingId","qualifying_id") \
+qualifying_renamed_df=qualifying_df.withColumnRenamed("qualifyingId","qualifying_id") \
               .withColumnRenamed("raceId","race_id") \
               .withColumnRenamed("driverId","driver_id") \
-              .withColumnRenamed("constructorId","constructor_id") \
-              .withColumn("ingestion_date",current_timestamp())
+              .withColumnRenamed("constructorId","constructor_id")
 
 # COMMAND ----------
 
-display(qualifying_final_df)
+qualifying_final_df=add_ingestion_date(qualifying_renamed_df)
 
 # COMMAND ----------
 
-qualifying_final_df.write.parquet("/mnt/storagegen2databricks/processed/qualifying",mode="overwrite")
+qualifying_final_df.write.parquet(f"{processed_folder_path}/qualifying",mode="overwrite")
 
 # COMMAND ----------
 

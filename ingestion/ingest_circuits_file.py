@@ -4,12 +4,20 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC #### Step 1 - Read using spark dataframe reader
 
 # COMMAND ----------
 
-circuits_df=spark.read.csv("/mnt/storagegen2databricks/raw/circuits.csv",header=True,inferSchema=True)
+circuits_df=spark.read.csv(f"{raw_folder_path}/circuits.csv",header=True,inferSchema=True)
 
 # COMMAND ----------
 
@@ -45,8 +53,7 @@ circuits_renamed_df=circuits_selected_df.withColumnRenamed("circuitId","circuit_
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
-circuits_final_df=circuits_renamed_df.withColumn("ingestion_date",current_timestamp())
+circuits_final_df=add_ingestion_date(circuits_renamed_df)
 
 # COMMAND ----------
 
@@ -55,7 +62,7 @@ circuits_final_df=circuits_renamed_df.withColumn("ingestion_date",current_timest
 
 # COMMAND ----------
 
-circuits_final_df.write.parquet("/mnt/storagegen2databricks/processed/circuits",mode="overwrite")
+circuits_final_df.write.parquet(f"{processed_folder_path}/circuits",mode="overwrite")
 
 # COMMAND ----------
 
@@ -64,7 +71,7 @@ circuits_final_df.write.parquet("/mnt/storagegen2databricks/processed/circuits",
 
 # COMMAND ----------
 
-df=spark.read.parquet("/mnt/storagegen2databricks/processed/circuits")
+df=spark.read.parquet(f"{processed_folder_path}/circuits")
 display(df)
 
 # COMMAND ----------

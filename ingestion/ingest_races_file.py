@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC #### Step 1: Create a schema to infer
 
@@ -27,7 +35,7 @@ races_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
 
 # create the races dataframe 
 
-races_df=spark.read.schema(races_schema).csv("/mnt/storagegen2databricks/raw/races.csv",header=True)
+races_df=spark.read.schema(races_schema).csv(f"{raw_folder_path}/races.csv",header=True)
 
 # COMMAND ----------
 
@@ -77,7 +85,7 @@ display(races_final_df)
 
 # Storing the data in partitions of years 
 
-races_final_df.write.partitionBy("race_year").parquet("/mnt/storagegen2databricks/processed/races",mode="overwrite")
+races_final_df.write.partitionBy("race_year").parquet(f"{processed_folder_path}/races",mode="overwrite")
 
 # COMMAND ----------
 
@@ -86,7 +94,7 @@ races_final_df.write.partitionBy("race_year").parquet("/mnt/storagegen2databrick
 
 # COMMAND ----------
 
-df=spark.read.parquet("/mnt/storagegen2databricks/processed/races")
+df=spark.read.parquet(f"{processed_folder_path}/races")
 display(df)
 
 # COMMAND ----------
