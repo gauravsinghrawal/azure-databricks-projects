@@ -5,6 +5,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType,StructField,IntegerType,StringType,DateType
 
 name_schema=StructType(fields=[StructField("forename",StringType(),True),
@@ -25,7 +33,7 @@ driver_schema=StructType(fields=[StructField("driverId",IntegerType(),True),
 
 drivers_df=spark.read \
 .schema(driver_schema) \
-.json("/mnt/storagegen2databricks/raw/drivers.json")
+.json(f"{raw_folder_path}/drivers.json")
 
 # COMMAND ----------
 
@@ -36,10 +44,13 @@ drivers_df=spark.read \
 
 from pyspark.sql.functions import current_timestamp,concat,lit,col
 
-new_drivers_df=drivers_df.withColumnRenamed("driverId","driver_id") \
+drivers_renamed_df=drivers_df.withColumnRenamed("driverId","driver_id") \
                           .withColumnRenamed("driverRef","driver_ref") \
-                          .withColumn("ingestion_date",current_timestamp())\
                           .withColumn("name",concat(col("name.forename"),lit(" "),col("name.surname")))
+
+# COMMAND ----------
+
+drivers_final_df=add_ingestion_date(drivers_renamed_df)
 
 # COMMAND ----------
 
@@ -49,7 +60,7 @@ new_drivers_df=drivers_df.withColumnRenamed("driverId","driver_id") \
 
 # COMMAND ----------
 
-drivers_final_df=new_drivers_df.drop(new_drivers_df.url)
+drivers_final_df=drivers_final_df.drop(drivers_final_df.url)
 
 # COMMAND ----------
 
@@ -59,7 +70,7 @@ drivers_final_df=new_drivers_df.drop(new_drivers_df.url)
 
 # COMMAND ----------
 
-drivers_final_df.write.parquet("/mnt/storagegen2databricks/processed/drivers",mode="overwrite")
+drivers_final_df.write.parquet(f"{processed_folder_path}/drivers",mode="overwrite")
 
 # COMMAND ----------
 

@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC 
 # MAGIC ### Step 1: Read the JSON file using databricks Reader method
@@ -11,7 +19,7 @@ constructors_schema="constructorId INT, constructorRef STRING, name STRING, nati
 
 constructors_df=spark.read\
 .schema(constructors_schema)\
-.json("/mnt/storagegen2databricks/raw/constructors.json")
+.json(f"{raw_folder_path}/constructors.json")
 
 # COMMAND ----------
 
@@ -29,11 +37,12 @@ constructors_df=constructors_df.drop('url')
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+constructor_renamed_df=constructors_df.withColumnRenamed("constructorId","constructor_id")\
+                                    .withColumnRenamed("constructorRef","constructor_ref")
 
-constructor_final_df=constructors_df.withColumnRenamed("constructorId","constructor_id")\
-                                    .withColumnRenamed("constructorRef","constructor_ref")\
-                                    .withColumn("ingestion_date",current_timestamp())
+# COMMAND ----------
+
+constructor_final_df=add_ingestion_date(constructor_renamed_df)
 
 # COMMAND ----------
 
@@ -43,11 +52,11 @@ constructor_final_df=constructors_df.withColumnRenamed("constructorId","construc
 
 # COMMAND ----------
 
-constructor_final_df.write.parquet("/mnt/storagegen2databricks/processed/constructors",mode="overwrite")
+constructor_final_df.write.parquet(f"{processed_folder_path}/constructors",mode="overwrite")
 
 # COMMAND ----------
 
-df=spark.read.parquet("/mnt/storagegen2databricks/processed/constructors")
+df=spark.read.parquet(f"{processed_folder_path}/constructors")
 display(df)
 
 # COMMAND ----------
