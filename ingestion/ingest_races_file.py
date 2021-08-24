@@ -36,6 +36,8 @@ races_df=spark.read.schema(races_schema).csv("/mnt/storagegen2databricks/raw/rac
 
 # COMMAND ----------
 
+# Creating some new columns
+
 from pyspark.sql.functions import current_timestamp,to_timestamp,concat,lit
 races_new_df=races_df.withColumn("ingestion_date",current_timestamp())\
                               .withColumn("race_timestamp",to_timestamp(concat(col('date'),lit(' '),col('time')),'yyyy-MM-dd HH:mm:ss'))
