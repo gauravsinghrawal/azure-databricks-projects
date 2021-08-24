@@ -4,6 +4,8 @@
 
 # COMMAND ----------
 
+# Creating a schema object to infer for races data
+
 from pyspark.sql.types import StructType,StructField,IntegerType,DoubleType,StringType,DateType
 
 races_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
