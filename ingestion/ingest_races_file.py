@@ -4,6 +4,8 @@
 
 # COMMAND ----------
 
+# Creating a schema object to infer for races data
+
 from pyspark.sql.types import StructType,StructField,IntegerType,DoubleType,StringType,DateType
 
 races_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
@@ -22,6 +24,8 @@ races_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
 # MAGIC #### Step 2: Read the file and apply the schema
 
 # COMMAND ----------
+
+# create the races dataframe 
 
 races_df=spark.read.schema(races_schema).csv("/mnt/storagegen2databricks/raw/races.csv",header=True)
 
