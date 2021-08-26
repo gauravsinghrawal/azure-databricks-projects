@@ -1,4 +1,9 @@
 # Databricks notebook source
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -70,7 +75,7 @@ races_selected_df=races_new_df.select(col("raceId"),col("year"),col("round"),col
 
 races_final_df=races_selected_df.withColumnRenamed("raceId","race_id")\
 .withColumnRenamed("year","race_year")\
-.withColumnRenamed("circuitId","circuit_id")
+.withColumnRenamed("circuitId","circuit_id").withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -99,4 +104,4 @@ display(df)
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

@@ -5,6 +5,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -43,10 +48,10 @@ laptimes_df=spark.read \
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp,lit
 
 laptimes_renamed_df=laptimes_df.withColumnRenamed("driverId","driver_id") \
-              .withColumnRenamed("raceId","race_id")
+              .withColumnRenamed("raceId","race_id").withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -58,4 +63,4 @@ laptimes_final_df.write.parquet(f"{processed_folder_path}/laptimes",mode="overwr
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

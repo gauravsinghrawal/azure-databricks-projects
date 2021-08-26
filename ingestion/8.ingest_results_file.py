@@ -1,4 +1,9 @@
 # Databricks notebook source
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -60,6 +65,7 @@ results_renamed_df=results_df.withColumnRenamed("resultId","result_id") \
                           .withColumnRenamed("fastestLap","fastest_lap")\
                           .withColumnRenamed("fastestLapTime","fastest_lap_time")\
                           .withColumnRenamed("fastestLapSpeed","fastest_lap_speed")\
+                          .withColumn("data_source",lit(v_data_source))\
                           .withColumn("ingestion_date",current_timestamp())
 
 # COMMAND ----------
@@ -80,4 +86,4 @@ display(spark.read.parquet("/mnt/storagegen2databricks/processed/results"))
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

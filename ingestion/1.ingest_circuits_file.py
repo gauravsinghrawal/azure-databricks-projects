@@ -4,6 +4,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -40,11 +45,13 @@ circuits_selected_df=circuits_df.select(col("circuitId"),col("circuitRef"),col("
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
 circuits_renamed_df=circuits_selected_df.withColumnRenamed("circuitId","circuit_id")\
 .withColumnRenamed("circuitRef","circuit_ref")\
 .withColumnRenamed("lat","latitude")\
 .withColumnRenamed("lng","longitude")\
-.withColumnRenamed("alt","altitude")
+.withColumnRenamed("alt","altitude")\
+.withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -76,4 +83,4 @@ display(df)
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

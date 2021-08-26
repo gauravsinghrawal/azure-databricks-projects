@@ -1,4 +1,9 @@
 # Databricks notebook source
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -37,8 +42,11 @@ constructors_df=constructors_df.drop('url')
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
 constructor_renamed_df=constructors_df.withColumnRenamed("constructorId","constructor_id")\
-                                    .withColumnRenamed("constructorRef","constructor_ref")
+                                    .withColumnRenamed("constructorRef","constructor_ref") \
+                                    .withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -61,4 +69,4 @@ display(df)
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")
