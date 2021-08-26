@@ -5,6 +5,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -46,7 +51,7 @@ from pyspark.sql.functions import current_timestamp,concat,lit,col
 
 drivers_renamed_df=drivers_df.withColumnRenamed("driverId","driver_id") \
                           .withColumnRenamed("driverRef","driver_ref") \
-                          .withColumn("name",concat(col("name.forename"),lit(" "),col("name.surname")))
+                          .withColumn("name",concat(col("name.forename"),lit(" "),col("name.surname"))).withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -74,4 +79,4 @@ drivers_final_df.write.parquet(f"{processed_folder_path}/drivers",mode="overwrit
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

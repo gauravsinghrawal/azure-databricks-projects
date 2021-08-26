@@ -1,4 +1,9 @@
 # Databricks notebook source
+dbutils.widgets.text("data_source","")
+v_data_source=dbutils.widgets.get("data_source")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -41,10 +46,12 @@ qualifying_df=spark.read \
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
 qualifying_renamed_df=qualifying_df.withColumnRenamed("qualifyingId","qualifying_id") \
               .withColumnRenamed("raceId","race_id") \
               .withColumnRenamed("driverId","driver_id") \
-              .withColumnRenamed("constructorId","constructor_id")
+              .withColumnRenamed("constructorId","constructor_id").withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -56,4 +63,4 @@ qualifying_final_df.write.parquet(f"{processed_folder_path}/qualifying",mode="ov
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")
