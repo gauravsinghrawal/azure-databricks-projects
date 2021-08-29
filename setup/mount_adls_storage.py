@@ -35,11 +35,19 @@ mount_adls("processed")
 
 # COMMAND ----------
 
+mount_adls("presentation")
+
+# COMMAND ----------
+
 dbutils.fs.ls("/mnt/storagegen2databricks/raw")
 
 # COMMAND ----------
 
 dbutils.fs.ls("/mnt/storagegen2databricks/processed")
+
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/storagegen2databricks/presentation")
 
 # COMMAND ----------
 
