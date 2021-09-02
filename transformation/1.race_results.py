@@ -35,7 +35,7 @@ races_df=spark.read.parquet(f"{processed_folder_path}/races")\
 
 results_df=spark.read.parquet(f"{processed_folder_path}/results")\
 .withColumnRenamed("time","race_time")\
-.withColumnRenamed(results_df.fastestLapTime,"fastest_lap")
+.withColumnRenamed("fastestLapTime","fastest_lap")
 
 # COMMAND ----------
 
@@ -59,12 +59,12 @@ race_results_df=results_df.join(races_cirtuits_df,results_df.race_id==races_cirt
 from pyspark.sql.functions import current_timestamp
 
 final_df=race_results_df.select("race_year", "race_name", "race_date", "circuit_location", "driver_name",
-                                "driver_number", "driver_nationality", "team", "grid", "race_time", "points", "fastest_lap")\
+                                "driver_number", "driver_nationality", "team", "grid", "race_time", "points", "fastest_lap","position")\
                                  .withColumn("created_date",current_timestamp())
 
 # COMMAND ----------
 
-final_df=final_df.filter("race_year==2020 and race_name=='Abu Dhabi Grand Prix'").orderBy(final_df.points.desc())
+final_df=final_df.orderBy(final_df.points.desc())
 
 # COMMAND ----------
 
