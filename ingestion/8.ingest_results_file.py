@@ -78,7 +78,8 @@ results_final_df=results_final_df.drop("statusId")
 
 # COMMAND ----------
 
-results_final_df.write.partitionBy("race_id").parquet("/mnt/storagegen2databricks/processed/results",mode="overwrite")
+#results_final_df.write.partitionBy("race_id").parquet("/mnt/storagegen2databricks/processed/results",mode="overwrite")
+results_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.results")
 
 # COMMAND ----------
 

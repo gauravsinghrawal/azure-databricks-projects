@@ -90,7 +90,8 @@ display(races_final_df)
 
 # Storing the data in partitions of years 
 
-races_final_df.write.partitionBy("race_year").parquet(f"{processed_folder_path}/races",mode="overwrite")
+#races_final_df.write.partitionBy("race_year").parquet(f"{processed_folder_path}/races",mode="overwrite")
+races_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.races")
 
 # COMMAND ----------
 

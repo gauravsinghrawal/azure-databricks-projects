@@ -171,4 +171,40 @@ SELECT * FROM f1_raw.pit_stops;
 
 -- COMMAND ----------
 
+DROP TABLE IF EXISTS f1_raw.lap_times;
+CREATE TABLE IF NOT EXISTS f1_raw.lap_times(
+driverId INT, 
+raceId INT,
+lap INT, 
+position INT, 
+time STRING,
+milliseconds INT
+)
+USING csv
+OPTIONS (path "/mnt/storagegen2databricks/raw/lap_times",header=true);
+
+-- COMMAND ----------
+
+SELECT * FROM f1_raw.lap_times;
+
+-- COMMAND ----------
+
+DROP TABLE IF EXISTS f1_raw.qualifying;
+CREATE TABLE IF NOT EXISTS f1_raw.qualifying(
+driverId INT, 
+raceId INT,
+lap INT, 
+position INT, 
+time STRING,
+milliseconds INT
+)
+USING json
+OPTIONS (path "/mnt/storagegen2databricks/raw/qualifying",header=true,multiLine=true);
+
+-- COMMAND ----------
+
+DESC EXTENDED f1_raw.qualifying;
+
+-- COMMAND ----------
+
 

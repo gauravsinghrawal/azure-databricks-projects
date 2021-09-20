@@ -69,12 +69,14 @@ circuits_final_df=add_ingestion_date(circuits_renamed_df)
 
 # COMMAND ----------
 
-circuits_final_df.write.parquet(f"{processed_folder_path}/circuits",mode="overwrite")
+#circuits_final_df.write.parquet(f"{processed_folder_path}/circuits",mode="overwrite")
+circuits_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.circuits")
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC ls /mnt/storagegen2databricks/processed/circuits
+# MAGIC %sql
+# MAGIC 
+# MAGIC SELECT * FROM f1_processed.circuits;
 
 # COMMAND ----------
 
