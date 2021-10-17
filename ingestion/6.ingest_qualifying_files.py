@@ -59,7 +59,8 @@ qualifying_final_df=add_ingestion_date(qualifying_renamed_df)
 
 # COMMAND ----------
 
-qualifying_final_df.write.parquet(f"{processed_folder_path}/qualifying",mode="overwrite")
+#qualifying_final_df.write.parquet(f"{processed_folder_path}/qualifying",mode="overwrite")
+qualifying_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.qualifying")
 
 # COMMAND ----------
 
