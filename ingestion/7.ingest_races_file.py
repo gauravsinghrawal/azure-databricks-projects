@@ -4,6 +4,11 @@ v_data_source=dbutils.widgets.get("data_source")
 
 # COMMAND ----------
 
+dbutils.widgets.text("file_date","2021-03-21")
+v_file_date=dbutils.widgets.get("file_date")
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -40,7 +45,7 @@ races_schema=StructType(fields=[StructField("raceId",IntegerType(),False),
 
 # create the races dataframe 
 
-races_df=spark.read.schema(races_schema).csv(f"{raw_folder_path}/races.csv",header=True)
+races_df=spark.read.schema(races_schema).csv(f"{raw_folder_path}/{v_file_date}/races.csv",header=True)
 
 # COMMAND ----------
 
@@ -75,7 +80,9 @@ races_selected_df=races_new_df.select(col("raceId"),col("year"),col("round"),col
 
 races_final_df=races_selected_df.withColumnRenamed("raceId","race_id")\
 .withColumnRenamed("year","race_year")\
-.withColumnRenamed("circuitId","circuit_id").withColumn("data_source",lit(v_data_source))
+.withColumnRenamed("circuitId","circuit_id")\
+.withColumn("data_source",lit(v_data_source))\
+.withColumn("file_date",lit(v_file_date))
 
 # COMMAND ----------
 
@@ -92,16 +99,6 @@ display(races_final_df)
 
 #races_final_df.write.partitionBy("race_year").parquet(f"{processed_folder_path}/races",mode="overwrite")
 races_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.races")
-
-# COMMAND ----------
-
-# MAGIC %fs
-# MAGIC ls /mnt/storagegen2databricks/processed/races
-
-# COMMAND ----------
-
-df=spark.read.parquet(f"{processed_folder_path}/races")
-display(df)
 
 # COMMAND ----------
 

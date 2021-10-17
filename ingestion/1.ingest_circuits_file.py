@@ -9,6 +9,15 @@ v_data_source=dbutils.widgets.get("data_source")
 
 # COMMAND ----------
 
+dbutils.widgets.text("file_date","2021-03-21")
+v_file_date=dbutils.widgets.get("file_date")
+
+# COMMAND ----------
+
+v_file_date
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -22,7 +31,7 @@ v_data_source=dbutils.widgets.get("data_source")
 
 # COMMAND ----------
 
-circuits_df=spark.read.csv(f"{raw_folder_path}/circuits.csv",header=True,inferSchema=True)
+circuits_df=spark.read.csv(f"{raw_folder_path}/{v_file_date}/circuits.csv",header=True,inferSchema=True)
 
 # COMMAND ----------
 
@@ -51,7 +60,8 @@ circuits_renamed_df=circuits_selected_df.withColumnRenamed("circuitId","circuit_
 .withColumnRenamed("lat","latitude")\
 .withColumnRenamed("lng","longitude")\
 .withColumnRenamed("alt","altitude")\
-.withColumn("data_source",lit(v_data_source))
+.withColumn("data_source",lit(v_data_source))\
+.withColumn("file_date",lit(v_file_date))
 
 # COMMAND ----------
 
@@ -80,9 +90,8 @@ circuits_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_proc
 
 # COMMAND ----------
 
-df=spark.read.parquet(f"{processed_folder_path}/circuits")
-display(df)
+dbutils.notebook.exit("Success")
 
 # COMMAND ----------
 
-dbutils.notebook.exit("Success")
+
